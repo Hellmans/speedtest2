@@ -1,0 +1,105 @@
+{
+  "identity": {
+    "persona": "E1",
+    "archetype": "Electric & Neon (Archetype 7)",
+    "vibe": "Future, Speed, Disruption",
+    "mission": "Create a speed test utility that feels like a warp drive engine interface."
+  },
+  "typography": {
+    "primary_font": "Orbitron, sans-serif",
+    "secondary_font": "Rajdhani, sans-serif",
+    "instructions": "Import 'Orbitron' (weights 400, 700, 900) and 'Rajdhani' (weights 400, 500, 600) from Google Fonts. Use Orbitron for all speed numbers and headings. Use Rajdhani for labels and body text."
+  },
+  "colors": {
+    "palette": {
+      "background": "#030305",
+      "surface": "#0A0A0F",
+      "primary": "#00F3FF",
+      "secondary": "#BC13FE",
+      "accent": "#FFFFFF",
+      "success": "#00FF94",
+      "error": "#FF0055",
+      "muted": "rgba(255, 255, 255, 0.5)"
+    },
+    "gradients": {
+      "neon_blue": "linear-gradient(135deg, #00F3FF 0%, #0066FF 100%)",
+      "neon_purple": "linear-gradient(135deg, #BC13FE 0%, #7000FF 100%)",
+      "dark_void": "radial-gradient(circle at center, #1a1a2e 0%, #000000 100%)"
+    },
+    "effects": {
+      "glow_text": "0 0 10px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.5)",
+      "glow_box": "0 0 15px rgba(0, 243, 255, 0.15), inset 0 0 10px rgba(0, 243, 255, 0.05)",
+      "neon_border": "1px solid rgba(0, 243, 255, 0.3)"
+    }
+  },
+  "layout": {
+    "structure": "Single Page Application (SPA). Centered 'Reactor Core' (Speedometer) with peripheral data modules.",
+    "spacing": "Generous padding (p-8 to p-12). Use CSS Grid for the main layout.",
+    "grid_system": "Bento Grid Mode A (The Tetris Grid) for the results section. Asymmetrical layout for visual interest.",
+    "background_strategy": "Use a dark, noise-textured background with a subtle geometric overlay. Do not use plain black."
+  },
+  "components": {
+    "Speedometer": {
+      "type": "Custom SVG or Canvas",
+      "instructions": "Create a custom circular gauge. The needle should leave a 'light trail'. The arc should glow intensely. Do NOT use a generic library if it looks 'stock'. If using a library, heavily customize it to look like a sci-fi HUD.",
+      "animation": "Smooth transition for the needle. Use 'ease-out' easing. The numbers should 'scramble' or count up digitally."
+    },
+    "StartButton": {
+      "style": "Cyberpunk Glitch Button",
+      "instructions": "Large, pill-shaped or hexagonal. On hover, it should glitch (shift colors/position slightly). Text: 'INITIATE' or 'RUN TEST'.",
+      "classes": "bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(0,243,255,0.4)]"
+    },
+    "ResultCard": {
+      "style": "Glassmorphism with Neon Border",
+      "instructions": "Dark glass background (bg-black/40 backdrop-blur-md). 1px border in primary or secondary neon color. Glowing numbers."
+    }
+  },
+  "visual_enhancers": {
+    "textures": "Add a fixed background layer with a 'scanline' or 'noise' effect (opacity 0.05).",
+    "decorations": "Use decorative SVG lines (circuit board style) in the corners of the screen.",
+    "motion": "Entrance animations: Staggered fade-in + slide-up for elements. Speedometer: Elastic bounce on load."
+  },
+  "assets": {
+    "icons": "Use 'lucide-react' but style them with a glow filter (drop-shadow).",
+    "images": [
+      {
+        "category": "background_overlay",
+        "url": "https://images.unsplash.com/photo-1764103659005-b7f14d25ce1a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMG5lb24lMjBibHVlJTIwZ3JpZCUyMGJhY2tncm91bmQlMjBkYXJrfGVufDB8fHx8MTc3MTQ3MDAwOXww&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract geometric neon grid to be used as a subtle background overlay (low opacity)."
+      }
+    ]
+  },
+  "tech_stack": {
+    "framework": "React",
+    "styling": "Tailwind CSS",
+    "animation": "framer-motion (Recommended) or CSS Transitions",
+    "icons": "lucide-react",
+    "charts": "recharts (for history graph if needed, otherwise custom SVG)"
+  },
+  "instructions_to_main_agent": [
+    "1. INSTALLATION: Run 'npm install framer-motion' immediately. This is essential for the smooth speedometer animations.",
+    "2. FONT SETUP: Add the Google Fonts import link for Orbitron and Rajdhani to 'index.html' or 'index.css'.",
+    "3. GLOBAL STYLES: Set 'body' background to #030305 and text to white. Apply the background image with opacity 0.1.",
+    "4. SPEEDOMETER LOGIC: Since there is no backend, MOCK the speed test logic using `setTimeout` and `Math.random` to simulate the phases: Ping -> Jitter -> Download -> Upload. Make the values realistic (e.g., Download 50-500 Mbps).",
+    "5. DEPLOYMENT: Ensure the app builds to a static 'dist' folder for XAMPP/NGINX compatibility. No SSR.",
+    "6. ACCESSIBILITY: Ensure neon colors have enough contrast against the dark background. Use the 'glow' for decoration, but keep the core text sharp white."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters (12-24px blur).",
+    "You MUST NOT apply universal transition. Eg: 'transition: all'. This results in breaking transforms.",
+    "You MUST NOT center align the app container, ie do not add '.App { text-align: center; }' in the css file.",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style.",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories = main agent will use placeholder text which is FORBIDDEN.",
+    "Prioritize using pre-existing components from src/components/ui when applicable.",
+    "Components MUST use named exports.",
+    "Pages MUST use default exports.",
+    "Use 'sonner' for toasts."
+  ]
+}
