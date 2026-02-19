@@ -1,7 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, Activity } from 'lucide-react';
 import "@/App.css";
-import { ProgressBars } from './components/ProgressBars';
 import { ResultCard } from './components/ResultCard';
 import { useSpeedTest } from './hooks/useSpeedTest';
 
@@ -83,12 +82,33 @@ const SpeedTestApp = () => {
                                 </motion.div>
                             </AnimatePresence>
                             
-                            {/* Progress Bars */}
-                            <ProgressBars
-                                phase={phase}
-                                currentSpeed={currentSpeed}
-                                results={results}
-                            />
+                            {/* Current Speed Display */}
+                            {phase !== 'idle' && phase !== 'complete' && (
+                                <motion.div 
+                                    className="text-center mb-4"
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <motion.span 
+                                        className="font-orbitron text-6xl lg:text-7xl font-bold"
+                                        style={{ 
+                                            color: phase === 'download' ? '#00F3FF' : 
+                                                   phase === 'upload' ? '#BC13FE' : 
+                                                   phase === 'ping' ? '#00FF94' : '#FFC800',
+                                            textShadow: `0 0 30px currentColor`
+                                        }}
+                                        key={currentSpeed}
+                                        initial={{ opacity: 0.5 }}
+                                        animate={{ opacity: 1 }}
+                                    >
+                                        {currentSpeed.toFixed(1)}
+                                    </motion.span>
+                                    <span className="font-rajdhani text-xl text-white/60 ml-2">
+                                        {phase === 'ping' || phase === 'jitter' ? 'ms' : 'Mbps'}
+                                    </span>
+                                </motion.div>
+                            )}
                             
                             {/* Start/Reset button */}
                             <motion.div

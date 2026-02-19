@@ -23,7 +23,7 @@ export const ResultCard = ({ type, value, unit, isActive = false }) => {
         },
         jitter: {
             icon: Activity,
-            label: 'Variação',
+            label: 'Jitter',
             color: '#FFC800',
             borderClass: 'jitter'
         }
