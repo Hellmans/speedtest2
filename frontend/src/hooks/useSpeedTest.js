@@ -87,7 +87,7 @@ export const useSpeedTest = () => {
     }, []);
     
     const measureUpload = useCallback(async () => {
-        const chunkSize = 2 * 1024 * 1024; // 2MB
+        const chunkSize = 2 * 1024 * 1024;
         const testDuration = 5000;
         const startTime = performance.now();
         let totalBytes = 0;
