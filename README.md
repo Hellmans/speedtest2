@@ -10,9 +10,9 @@ Um medidor de velocidade de internet moderno com visual neon, similar ao LibreSp
 - ✅ Teste de **Download** (velocidade de download em Mbps)
 - ✅ Teste de **Upload** (velocidade de upload em Mbps)
 - ✅ Medição de **Latência/Ping** (em milissegundos)
-- ✅ Medição de **Jitter/Variação** (em milissegundos)
+- ✅ Medição de **Jitter** (em milissegundos)
 - ✅ Interface moderna com tema neon azul
-- ✅ Barras de progresso animadas
+- ✅ Animações suaves
 - ✅ 100% em Português
 
 ## 🛠️ Tecnologias Utilizadas
@@ -25,22 +25,14 @@ Um medidor de velocidade de internet moderno com visual neon, similar ao LibreSp
 
 ---
 
-## 📦 Instalação
+## 📦 Instalação Passo a Passo
 
 ### Pré-requisitos
 
-Antes de começar, você precisa ter instalado:
+1. **Node.js** (versão 18+) - [Baixar aqui](https://nodejs.org/)
+2. **Python** (versão 3.8+) - [Baixar aqui](https://python.org/)
 
-- **Node.js** (versão 18 ou superior) - [Download](https://nodejs.org/)
-- **Python** (versão 3.8 ou superior) - [Download](https://python.org/)
-- **Yarn** (gerenciador de pacotes)
-
-**Instalar o Yarn (se não tiver):**
-```bash
-npm install -g yarn
-```
-
-### Passo 1: Clonar o Repositório
+### Passo 1: Baixar o Projeto
 
 ```bash
 git clone https://github.com/seu-usuario/teste-velocidade.git
@@ -49,45 +41,172 @@ cd teste-velocidade
 
 ### Passo 2: Instalar Dependências do Backend
 
+Abra um terminal na pasta do projeto:
+
 ```bash
 cd backend
-pip install -r requirements.txt
+pip install fastapi uvicorn python-dotenv
 ```
 
 ### Passo 3: Instalar Dependências do Frontend
 
+Abra outro terminal na pasta do projeto:
+
 ```bash
-cd ../frontend
-yarn install
+cd frontend
+npm install
 ```
 
-> ⚠️ **Importante:** Use `yarn install` e não `npm install`. O projeto usa Yarn como gerenciador de pacotes.
+> Se der erro, tente: `npm install --legacy-peer-deps`
 
 ---
 
 ## 🚀 Como Executar
 
-### Opção 1: Desenvolvimento Local (Recomendado para testar)
+### Você precisa abrir 2 terminais!
 
-Você precisa abrir **2 terminais** separados:
+---
 
-**Terminal 1 - Iniciar o Backend:**
+### Terminal 1 - Backend (API)
+
 ```bash
 cd backend
-python -m uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+python -m uvicorn server:app --host 0.0.0.0 --port 8001
 ```
 
-> Você verá: `Uvicorn running on http://0.0.0.0:8001`
+✅ Deve aparecer: `Uvicorn running on http://0.0.0.0:8001`
 
-**Terminal 2 - Iniciar o Frontend:**
+---
+
+### Terminal 2 - Frontend (Interface)
+
 ```bash
 cd frontend
-yarn start
+npm start
 ```
 
-> O navegador abrirá automaticamente em **http://localhost:3000**
+✅ O navegador vai abrir automaticamente em: **http://localhost:3000**
 
-**Pronto!** Agora você pode testar a velocidade da sua internet.
+---
+
+## ⚠️ Problemas Comuns
+
+### Erro: "No such file or directory: 'start'"
+
+**Causa:** Você não rodou `npm install` antes.
+
+**Solução:**
+```bash
+cd frontend
+npm install
+npm start
+```
+
+### Erro: "Module not found" ou "Cannot find module"
+
+**Solução:**
+```bash
+cd frontend
+rm -rf node_modules
+npm install --legacy-peer-deps
+npm start
+```
+
+### Erro: "CORS policy blocked"
+
+**Causa:** O backend não está rodando.
+
+**Solução:** Certifique-se de que o backend está rodando no Terminal 1.
+
+### Erro: "'python' não é reconhecido"
+
+**Causa:** Python não está instalado ou não está no PATH.
+
+**Solução:** 
+- Windows: Reinstale Python marcando "Add to PATH"
+- Ou use `python3` ao invés de `python`
+
+---
+
+## 🔧 Configuração para Produção (XAMPP/NGINX)
+
+### Passo 1: Criar Build do Frontend
+
+```bash
+cd frontend
+npm run build
+```
+
+Isso cria uma pasta `build/` com os arquivos estáticos.
+
+### Passo 2: Configurar URL do Backend
+
+Antes do build, edite `frontend/.env`:
+
+```env
+REACT_APP_BACKEND_URL=http://SEU-IP-OU-DOMINIO:8001
+```
+
+### Para XAMPP:
+
+1. Copie a pasta `build/` para `C:\xampp\htdocs\speedtest\`
+2. Rode o backend separadamente
+3. Acesse: `http://localhost/speedtest`
+
+### Para NGINX:
+
+1. Copie a pasta `build/` para `/var/www/html/speedtest/`
+2. Configure proxy reverso para `/api/` apontar para porta 8001
+3. Rode o backend como serviço
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+teste-velocidade/
+├── backend/
+│   ├── server.py          # API do servidor
+│   ├── requirements.txt   # Dependências Python
+│   └── .env              # Configurações
+│
+├── frontend/
+│   ├── src/
+│   │   ├── App.js        # Componente principal
+│   │   └── components/   # Componentes React
+│   ├── package.json      # Dependências Node
+│   └── .env              # URL do backend
+│
+└── README.md
+```
+
+---
+
+## 📝 Resumo Rápido
+
+```bash
+# 1. Instalar backend
+cd backend
+pip install fastapi uvicorn python-dotenv
+
+# 2. Instalar frontend  
+cd ../frontend
+npm install
+
+# 3. Rodar backend (Terminal 1)
+cd backend
+python -m uvicorn server:app --host 0.0.0.0 --port 8001
+
+# 4. Rodar frontend (Terminal 2)
+cd frontend
+npm start
+```
+
+---
+
+## 📄 Licença
+
+MIT License - Livre para usar e modificar.
 
 ---
 
