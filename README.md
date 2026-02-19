@@ -461,17 +461,4 @@ yarn build
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
----
-
-## 👨‍💻 Autor
-
-Desenvolvido com ❤️ 
-
----
-
-## 🌟 Agradecimentos
-
-- Inspirado no projeto [LibreSpeed](https://github.com/librespeed/speedtest)
-- Interface com tema Neon/Cyberpunk
+MIT License - Livre para usar e modificar.
