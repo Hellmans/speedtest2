@@ -1,5 +1,5 @@
 import { RefreshCw, Activity } from 'lucide-react';
-import "@/App.css";
+import './App.css';
 import { ResultCard } from './components/ResultCard';
 import { useSpeedTest } from './hooks/useSpeedTest';
 

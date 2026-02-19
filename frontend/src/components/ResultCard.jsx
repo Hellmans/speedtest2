@@ -13,7 +13,7 @@ export const ResultCard = ({ type, value, unit, isActive = false }) => {
     
     return (
         <div
-            className="glass-card p-5 rounded-xl"
+            className="p-5 rounded-xl"
             data-testid={`result-card-${type}`}
             style={{
                 background: 'rgba(10, 10, 15, 0.7)',
