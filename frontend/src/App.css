@@ -1,34 +1,236 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
-}
-
-.App-header {
-    background-color: #0f0f10;
+/* Main App Container */
+.speed-test-app {
     min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* Speedometer Styles */
+.speedometer-container {
+    position: relative;
+    width: 320px;
+    height: 320px;
+}
+
+@media (min-width: 640px) {
+    .speedometer-container {
+        width: 400px;
+        height: 400px;
+    }
+}
+
+.speedometer-glow {
+    filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.5));
+}
+
+/* Speed value display */
+.speed-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.speed-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: #00F3FF;
+    text-shadow: 
+        0 0 10px rgba(0, 243, 255, 0.7),
+        0 0 20px rgba(0, 243, 255, 0.5),
+        0 0 40px rgba(0, 243, 255, 0.3);
+    line-height: 1;
+}
+
+@media (min-width: 640px) {
+    .speed-value {
+        font-size: 4rem;
+    }
+}
+
+.speed-unit {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+/* Result cards */
+.result-card {
+    background: rgba(10, 10, 15, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.result-card:hover {
+    border-color: rgba(0, 243, 255, 0.4);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+}
+
+.result-card.download {
+    border-color: rgba(0, 243, 255, 0.3);
+}
+
+.result-card.upload {
+    border-color: rgba(188, 19, 254, 0.3);
+}
+
+.result-card.ping {
+    border-color: rgba(0, 255, 148, 0.3);
+}
+
+.result-card.jitter {
+    border-color: rgba(255, 200, 0, 0.3);
+}
+
+/* Start button */
+.start-button {
+    position: relative;
+    padding: 1rem 3rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #00F3FF;
+    background: transparent;
+    border: 2px solid #00F3FF;
+    border-radius: 50px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.start-button:hover {
+    background: #00F3FF;
+    color: #030305;
+    box-shadow: 
+        0 0 20px rgba(0, 243, 255, 0.4),
+        0 0 40px rgba(0, 243, 255, 0.2);
+}
+
+.start-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.start-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.start-button:hover::before {
+    left: 100%;
+}
+
+/* Phase indicator */
+.phase-indicator {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(10, 10, 15, 0.8);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    border-radius: 20px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
-.App-link {
-    color: #61dafb;
+.phase-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00F3FF;
+    animation: blink 1s ease-in-out infinite;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
     }
-    to {
-        transform: rotate(360deg);
+    50% {
+        opacity: 0.3;
     }
+}
+
+/* Progress bar */
+.progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00F3FF, #BC13FE);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* Decorative elements */
+.corner-decoration {
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.corner-decoration.top-left {
+    top: 20px;
+    left: 20px;
+    border-left: 2px solid rgba(0, 243, 255, 0.15);
+    border-top: 2px solid rgba(0, 243, 255, 0.15);
+}
+
+.corner-decoration.top-right {
+    top: 20px;
+    right: 20px;
+    border-right: 2px solid rgba(0, 243, 255, 0.15);
+    border-top: 2px solid rgba(0, 243, 255, 0.15);
+}
+
+.corner-decoration.bottom-left {
+    bottom: 20px;
+    left: 20px;
+    border-left: 2px solid rgba(0, 243, 255, 0.15);
+    border-bottom: 2px solid rgba(0, 243, 255, 0.15);
+}
+
+.corner-decoration.bottom-right {
+    bottom: 20px;
+    right: 20px;
+    border-right: 2px solid rgba(0, 243, 255, 0.15);
+    border-bottom: 2px solid rgba(0, 243, 255, 0.15);
+}
+
+/* Number scramble animation */
+@keyframes scramble {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+.scrambling {
+    animation: scramble 0.1s ease-in-out;
 }

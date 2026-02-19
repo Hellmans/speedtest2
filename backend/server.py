@@ -1,70 +1,109 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Response
+from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import time
+import random
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List
-import uuid
-from datetime import datetime, timezone
-
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
-
-# Create the main app without a prefix
+# Create the main app
 app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-# Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-class StatusCheckCreate(BaseModel):
-    client_name: str
-
-# Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "SpeedTest API - Ready"}
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
+@api_router.get("/ping")
+async def ping():
+    """Endpoint for measuring ping/latency"""
+    return {"timestamp": time.time() * 1000}
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
+@api_router.get("/download")
+async def download():
+    """
+    Generate random data for download speed test
+    Returns 25MB of random data
+    """
+    chunk_size = 1024 * 1024  # 1MB chunks
+    total_size = 25 * 1024 * 1024  # 25MB total
     
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
+    def generate_data():
+        bytes_sent = 0
+        while bytes_sent < total_size:
+            # Generate random bytes for realistic speed test
+            chunk = os.urandom(min(chunk_size, total_size - bytes_sent))
+            bytes_sent += len(chunk)
+            yield chunk
     
-    return status_checks
+    return StreamingResponse(
+        generate_data(),
+        media_type="application/octet-stream",
+        headers={
+            "Content-Length": str(total_size),
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0"
+        }
+    )
+
+@api_router.post("/upload")
+async def upload(request_body: bytes = b""):
+    """
+    Endpoint for upload speed test
+    Receives data and returns the size received
+    """
+    from fastapi import Request
+    return {"received": 0, "timestamp": time.time() * 1000}
+
+from fastapi import Request
+
+@api_router.post("/upload-test")
+async def upload_test(request: Request):
+    """
+    Endpoint for upload speed test
+    Receives streamed data and returns the size received
+    """
+    total_bytes = 0
+    start_time = time.time()
+    
+    async for chunk in request.stream():
+        total_bytes += len(chunk)
+    
+    end_time = time.time()
+    duration = end_time - start_time
+    
+    return {
+        "received": total_bytes,
+        "duration": duration,
+        "timestamp": time.time() * 1000
+    }
+
+@api_router.get("/garbage")
+async def garbage():
+    """
+    Alternative download endpoint that returns chunks for precise measurement
+    Query param: size (in MB, default 10)
+    """
+    from fastapi import Query
+    return StreamingResponse(
+        iter([os.urandom(1024 * 1024) for _ in range(10)]),
+        media_type="application/octet-stream"
+    )
 
 # Include the router in the main app
 app.include_router(api_router)
@@ -77,13 +116,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+@app.on_event("startup")
+async def startup():
+    logger.info("SpeedTest API started")
