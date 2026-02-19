@@ -50,66 +50,88 @@ export const useSpeedTest = () => {
     }, []);
     
     const measureDownload = useCallback(async () => {
+        const testDuration = 8000;
         const startTime = performance.now();
         let totalBytes = 0;
-        let lastUpdate = startTime;
-        let lastBytes = 0;
+        let speeds = [];
         
-        abortRef.current = new AbortController();
-        
-        try {
-            const response = await fetch(`${API}/download?_=${Date.now()}`, {
-                signal: abortRef.current.signal
-            });
-            
-            const reader = response.body.getReader();
-            
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                
-                totalBytes += value.length;
-                
-                const now = performance.now();
-                if (now - lastUpdate >= 200) {
-                    const mbps = ((totalBytes - lastBytes) * 8) / ((now - lastUpdate) / 1000) / 1000000;
-                    setCurrentSpeed(mbps);
-                    lastUpdate = now;
-                    lastBytes = totalBytes;
-                }
+        // Run multiple parallel downloads for better accuracy
+        const downloadChunk = async () => {
+            try {
+                const response = await fetch(`${API}/download?_=${Date.now()}&size=50`);
+                const blob = await response.blob();
+                return blob.size;
+            } catch {
+                return 0;
             }
-        } catch (e) {
-            if (e.name !== 'AbortError') console.error(e);
+        };
+        
+        while (performance.now() - startTime < testDuration) {
+            const chunkStart = performance.now();
+            
+            // 4 parallel downloads
+            const results = await Promise.all([
+                downloadChunk(),
+                downloadChunk(),
+                downloadChunk(),
+                downloadChunk()
+            ]);
+            
+            const chunkBytes = results.reduce((a, b) => a + b, 0);
+            const chunkTime = (performance.now() - chunkStart) / 1000;
+            
+            totalBytes += chunkBytes;
+            
+            if (chunkTime > 0 && chunkBytes > 0) {
+                const speed = (chunkBytes * 8) / chunkTime / 1000000;
+                speeds.push(speed);
+                setCurrentSpeed(speed);
+            }
         }
         
         const duration = (performance.now() - startTime) / 1000;
-        return (totalBytes * 8) / duration / 1000000;
+        const avgSpeed = (totalBytes * 8) / duration / 1000000;
+        
+        return avgSpeed;
     }, []);
     
     const measureUpload = useCallback(async () => {
-        const chunkSize = 2 * 1024 * 1024;
-        const testDuration = 5000;
+        const testDuration = 8000;
+        const chunkSize = 4 * 1024 * 1024; // 4MB
         const startTime = performance.now();
         let totalBytes = 0;
-        let lastUpdate = startTime;
-        let lastBytes = 0;
         
         const chunk = new Uint8Array(chunkSize);
         
+        const uploadChunk = async () => {
+            try {
+                await fetch(`${API}/upload`, {
+                    method: 'POST',
+                    body: chunk
+                });
+                return chunkSize;
+            } catch {
+                return 0;
+            }
+        };
+        
         while (performance.now() - startTime < testDuration) {
-            await fetch(`${API}/upload`, {
-                method: 'POST',
-                body: chunk
-            });
+            const chunkStart = performance.now();
             
-            totalBytes += chunkSize;
+            // 2 parallel uploads
+            const results = await Promise.all([
+                uploadChunk(),
+                uploadChunk()
+            ]);
             
-            const now = performance.now();
-            if (now - lastUpdate >= 200) {
-                const mbps = ((totalBytes - lastBytes) * 8) / ((now - lastUpdate) / 1000) / 1000000;
-                setCurrentSpeed(mbps);
-                lastUpdate = now;
-                lastBytes = totalBytes;
+            const chunkBytes = results.reduce((a, b) => a + b, 0);
+            const chunkTime = (performance.now() - chunkStart) / 1000;
+            
+            totalBytes += chunkBytes;
+            
+            if (chunkTime > 0) {
+                const speed = (chunkBytes * 8) / chunkTime / 1000000;
+                setCurrentSpeed(speed);
             }
         }
         
