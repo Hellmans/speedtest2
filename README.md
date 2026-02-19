@@ -33,7 +33,12 @@ Antes de começar, você precisa ter instalado:
 
 - **Node.js** (versão 18 ou superior) - [Download](https://nodejs.org/)
 - **Python** (versão 3.8 ou superior) - [Download](https://python.org/)
-- **Yarn** (gerenciador de pacotes) - Instale com: `npm install -g yarn`
+- **Yarn** (gerenciador de pacotes)
+
+**Instalar o Yarn (se não tiver):**
+```bash
+npm install -g yarn
+```
 
 ### Passo 1: Clonar o Repositório
 
@@ -49,13 +54,6 @@ cd backend
 pip install -r requirements.txt
 ```
 
-**Conteúdo do `requirements.txt`:**
-```
-fastapi==0.110.1
-uvicorn==0.25.0
-python-dotenv>=1.0.1
-```
-
 ### Passo 3: Instalar Dependências do Frontend
 
 ```bash
@@ -63,17 +61,23 @@ cd ../frontend
 yarn install
 ```
 
+> ⚠️ **Importante:** Use `yarn install` e não `npm install`. O projeto usa Yarn como gerenciador de pacotes.
+
 ---
 
 ## 🚀 Como Executar
 
 ### Opção 1: Desenvolvimento Local (Recomendado para testar)
 
+Você precisa abrir **2 terminais** separados:
+
 **Terminal 1 - Iniciar o Backend:**
 ```bash
 cd backend
-uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+python -m uvicorn server:app --host 0.0.0.0 --port 8001 --reload
 ```
+
+> Você verá: `Uvicorn running on http://0.0.0.0:8001`
 
 **Terminal 2 - Iniciar o Frontend:**
 ```bash
@@ -81,7 +85,9 @@ cd frontend
 yarn start
 ```
 
-Acesse: **http://localhost:3000**
+> O navegador abrirá automaticamente em **http://localhost:3000**
+
+**Pronto!** Agora você pode testar a velocidade da sua internet.
 
 ---
 
