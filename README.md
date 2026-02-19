@@ -41,8 +41,6 @@ cd teste-velocidade
 
 ### Passo 2: Instalar Dependências do Backend
 
-Abra um terminal na pasta do projeto:
-
 ```bash
 cd backend
 pip install fastapi uvicorn python-dotenv
@@ -50,14 +48,10 @@ pip install fastapi uvicorn python-dotenv
 
 ### Passo 3: Instalar Dependências do Frontend
 
-Abra outro terminal na pasta do projeto:
-
 ```bash
-cd frontend
+cd ../frontend
 npm install
 ```
-
-> Se der erro, tente: `npm install --legacy-peer-deps`
 
 ---
 
@@ -91,40 +85,22 @@ npm start
 
 ## ⚠️ Problemas Comuns
 
-### Erro: "No such file or directory: 'start'"
+### Erro: "Module not found"
 
-**Causa:** Você não rodou `npm install` antes.
-
-**Solução:**
-```bash
-cd frontend
-npm install
-npm start
-```
-
-### Erro: "Module not found" ou "Cannot find module"
-
-**Solução:**
 ```bash
 cd frontend
 rm -rf node_modules
-npm install --legacy-peer-deps
-npm start
+npm install
 ```
 
 ### Erro: "CORS policy blocked"
 
-**Causa:** O backend não está rodando.
-
-**Solução:** Certifique-se de que o backend está rodando no Terminal 1.
+O backend não está rodando. Inicie o backend primeiro (Terminal 1).
 
 ### Erro: "'python' não é reconhecido"
 
-**Causa:** Python não está instalado ou não está no PATH.
-
-**Solução:** 
 - Windows: Reinstale Python marcando "Add to PATH"
-- Ou use `python3` ao invés de `python`
+- Linux/Mac: Use `python3` ao invés de `python`
 
 ---
 
