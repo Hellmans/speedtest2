@@ -17,13 +17,13 @@ export const ResultCard = ({ type, value, unit, isActive = false }) => {
         },
         ping: {
             icon: Gauge,
-            label: 'Ping',
+            label: 'Latência',
             color: '#00FF94',
             borderClass: 'ping'
         },
         jitter: {
             icon: Activity,
-            label: 'Jitter',
+            label: 'Variação',
             color: '#FFC800',
             borderClass: 'jitter'
         }

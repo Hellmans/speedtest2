@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wifi, RefreshCw, Zap } from 'lucide-react';
+import { RefreshCw, Activity } from 'lucide-react';
 import "@/App.css";
-import { Speedometer } from './components/Speedometer';
+import { ProgressBars } from './components/ProgressBars';
 import { ResultCard } from './components/ResultCard';
 import { useSpeedTest } from './hooks/useSpeedTest';
 
@@ -17,33 +17,17 @@ const SpeedTestApp = () => {
     
     const getPhaseLabel = () => {
         switch (phase) {
-            case 'ping': return 'Measuring Ping...';
-            case 'jitter': return 'Measuring Jitter...';
-            case 'download': return 'Testing Download...';
-            case 'upload': return 'Testing Upload...';
-            case 'complete': return 'Test Complete';
-            default: return 'Ready';
-        }
-    };
-    
-    const getMaxValue = () => {
-        switch (phase) {
-            case 'ping':
-            case 'jitter':
-                return 100; // ms
-            default:
-                return 500; // Mbps
+            case 'ping': return 'Medindo Ping...';
+            case 'jitter': return 'Medindo Jitter...';
+            case 'download': return 'Testando Download...';
+            case 'upload': return 'Testando Upload...';
+            case 'complete': return 'Teste Completo';
+            default: return 'Pronto';
         }
     };
 
     return (
         <div className="speed-test-app min-h-screen" data-testid="speed-test-app">
-            {/* Corner decorations */}
-            <div className="corner-decoration top-left" />
-            <div className="corner-decoration top-right" />
-            <div className="corner-decoration bottom-left" />
-            <div className="corner-decoration bottom-right" />
-            
             {/* Main content */}
             <div className="relative z-10 min-h-screen flex flex-col">
                 {/* Header */}
@@ -53,10 +37,10 @@ const SpeedTestApp = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <div className="flex items-center justify-between max-w-7xl mx-auto">
+                    <div className="flex items-center justify-center max-w-7xl mx-auto">
                         <div className="flex items-center gap-3">
                             <div className="p-2 rounded-lg glass neon-box">
-                                <Zap 
+                                <Activity 
                                     size={24} 
                                     className="text-[#00F3FF]"
                                     style={{ filter: 'drop-shadow(0 0 8px rgba(0, 243, 255, 0.8))' }}
@@ -64,29 +48,20 @@ const SpeedTestApp = () => {
                             </div>
                             <div>
                                 <h1 className="font-orbitron text-xl lg:text-2xl font-bold text-white">
-                                    SPEED<span className="text-[#00F3FF] neon-text">TEST</span>
+                                    TESTE DE <span className="text-[#00F3FF] neon-text">VELOCIDADE</span>
                                 </h1>
                                 <p className="font-rajdhani text-xs text-white/50 uppercase tracking-widest">
-                                    Network Performance
+                                    Medidor de Conexão
                                 </p>
                             </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                            <Wifi 
-                                size={20} 
-                                className="text-[#00FF94]"
-                                style={{ filter: 'drop-shadow(0 0 4px rgba(0, 255, 148, 0.8))' }}
-                            />
-                            <span className="font-rajdhani text-sm text-white/60">Connected</span>
                         </div>
                     </div>
                 </motion.header>
                 
                 {/* Main section */}
                 <main className="flex-1 flex flex-col items-center justify-center px-6 py-8 lg:py-12">
-                    <div className="w-full max-w-5xl">
-                        {/* Speedometer section */}
+                    <div className="w-full max-w-4xl">
+                        {/* Progress Bars section */}
                         <motion.div
                             className="flex flex-col items-center mb-12"
                             initial={{ opacity: 0, scale: 0.9 }}
@@ -108,11 +83,11 @@ const SpeedTestApp = () => {
                                 </motion.div>
                             </AnimatePresence>
                             
-                            {/* Speedometer */}
-                            <Speedometer
-                                value={currentSpeed}
-                                maxValue={getMaxValue()}
+                            {/* Progress Bars */}
+                            <ProgressBars
                                 phase={phase}
+                                currentSpeed={currentSpeed}
+                                results={results}
                             />
                             
                             {/* Start/Reset button */}
@@ -129,7 +104,7 @@ const SpeedTestApp = () => {
                                         data-testid="reset-button"
                                     >
                                         <RefreshCw size={20} />
-                                        <span>TEST AGAIN</span>
+                                        <span>TESTAR NOVAMENTE</span>
                                     </button>
                                 ) : (
                                     <button
@@ -138,7 +113,7 @@ const SpeedTestApp = () => {
                                         disabled={isRunning}
                                         data-testid="start-button"
                                     >
-                                        {isRunning ? 'TESTING...' : 'INITIATE TEST'}
+                                        {isRunning ? 'TESTANDO...' : 'INICIAR TESTE'}
                                     </button>
                                 )}
                             </motion.div>
@@ -188,7 +163,7 @@ const SpeedTestApp = () => {
                     transition={{ duration: 0.5, delay: 0.6 }}
                 >
                     <p className="font-rajdhani text-sm text-white/30">
-                        XAMPP/NGINX Compatible
+                        Compatível com XAMPP/NGINX
                     </p>
                 </motion.footer>
             </div>
